@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historical Archive: Adolf Hitler & World War II History</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & Playfair Display -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,800;1,400&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        amber: {
+                            850: '#6d420f',
+                            950: '#341a05',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbars for academic aesthetic */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a3447;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3b4c68;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans overflow-hidden bg-slate-950 text-slate-200">
+
+    <!-- Header Navigation Bar -->
+    <header class="h-16 border-b border-slate-800 bg-slate-900/90 backdrop-blur shrink-0 flex items-center justify-between px-4 md:px-6 z-20">
+        <div class="flex items-center space-x-3">
+            <button id="toggle-mobile-sidebar" class="md:hidden p-2 text-slate-400 hover:text-slate-100 rounded-lg hover:bg-slate-800">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-landmark text-amber-500 text-xl"></i>
+                <span class="font-serif font-bold text-lg md:text-xl tracking-wide text-slate-100">HISTORIA <span class="text-amber-500 font-sans text-xs uppercase px-2 py-0.5 rounded bg-amber-950/60 border border-amber-700/50 ml-1">Archive 1889–1945</span></span>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="flex-1 max-w-xl mx-4">
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                <input type="text" id="global-search" placeholder="Search 100 historical articles, events, dates, or keywords..." 
+                    class="w-full bg-slate-950/80 border border-slate-700/70 rounded-lg pl-10 pr-10 py-1.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-amber-500/80 focus:ring-1 focus:ring-amber-500/80 transition-all">
+                <button id="clear-search" class="hidden absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-500 hover:text-slate-300">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-3 text-xs md:text-sm">
+            <span class="hidden lg:inline text-slate-400"><i class="fa-solid fa-book-open text-amber-500/80 mr-1"></i> Entries: <strong id="entry-count" class="text-slate-200">100</strong></span>
+            <button id="bookmark-filter-btn" class="px-3 py-1.5 border border-slate-700 rounded-lg bg-slate-800/80 hover:bg-slate-800 text-slate-300 hover:text-amber-400 transition-colors flex items-center space-x-1.5">
+                <i class="fa-solid fa-bookmark text-xs"></i>
+                <span class="hidden sm:inline">Bookmarks</span>
+                <span id="bookmark-badge" class="bg-amber-500/20 text-amber-400 text-xs px-1.5 py-0.5 rounded-full font-mono">0</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="flex-1 flex overflow-hidden relative">
+
+        <!-- Sidebar Navigation (10 Main Categories) -->
+        <aside id="sidebar" class="absolute md:relative z-30 inset-y-0 left-0 w-72 md:w-80 bg-slate-900 border-r border-slate-800 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col h-full">
+            <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
+                <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center">
+                    <i class="fa-solid fa-layer-group text-amber-500/80 mr-2"></i> Categories (10)
+                </h2>
+                <span class="text-xs font-mono text-slate-500">10 Topics / Cat</span>
+            </div>
+            
+            <nav id="category-menu" class="flex-1 overflow-y-auto p-2 space-y-1">
+                <!-- Populated dynamically by JavaScript -->
+            </nav>
+
+            <div class="p-3 border-t border-slate-800/80 bg-slate-950/40 text-xs text-slate-500 text-center">
+                Strictly Educational & Scholarly Analysis
+            </div>
+        </aside>
+
+        <!-- Sidebar Overlay for Mobile -->
+        <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-20 md:hidden"></div>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col h-full overflow-hidden bg-slate-950">
+            
+            <!-- Category Header & Controls -->
+            <div id="content-header" class="border-b border-slate-800 p-4 md:px-8 md:py-6 bg-slate-900/30 flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
+                <div>
+                    <div class="flex items-center space-x-2 text-xs font-semibold text-amber-500 uppercase tracking-wider mb-1">
+                        <span id="cat-index-badge" class="px-2 py-0.5 bg-amber-950/80 border border-amber-800/40 rounded">Category 1 of 10</span>
+                        <span>•</span>
+                        <span id="cat-timeline-badge">1889 – 1918</span>
+                    </div>
+                    <h1 id="cat-title" class="text-2xl md:text-3xl font-serif font-bold text-slate-100">Early Life & Formative Years</h1>
+                    <p id="cat-desc" class="text-sm text-slate-400 mt-1 max-w-3xl">Exploration of Hitler's youth in Austria, Vienna period, service in World War I, and early ideological developments.</p>
+                </div>
+
+                <div class="flex items-center space-x-2 shrink-0">
+                    <div class="inline-flex rounded-lg border border-slate-800 p-1 bg-slate-900 text-xs">
+                        <button id="view-grid-btn" class="px-3 py-1 rounded bg-slate-800 text-slate-200 font-medium"><i class="fa-solid fa-border-all mr-1"></i> Grid</button>
+                        <button id="view-list-btn" class="px-3 py-1 rounded text-slate-400 hover:text-slate-200"><i class="fa-solid fa-list mr-1"></i> List</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sub-Articles Container (10 Pages/Cards per Category) -->
+            <div class="flex-1 overflow-y-auto p-4 md:p-8" id="articles-scroll-container">
+                <!-- Search Result Notification (hidden by default) -->
+                <div id="search-info-bar" class="hidden mb-6 p-4 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-solid fa-filter text-amber-500"></i>
+                        <span class="text-sm text-slate-300">Found <strong id="search-count" class="text-amber-400">0</strong> matching historical entries across all 100 pages.</span>
+                    </div>
+                    <button id="reset-search-btn" class="text-xs text-slate-400 hover:text-slate-100 underline">Show All Categories</button>
+                </div>
+
+                <div id="articles-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- 10 Articles Rendered Dynamically -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="no-results" class="hidden text-center py-16">
+                    <i class="fa-solid fa-box-open text-4xl text-slate-700 mb-3"></i>
+                    <h3 class="text-lg font-serif font-bold text-slate-300">No Historical Records Found</h3>
+                    <p class="text-sm text-slate-500 max-w-md mx-auto mt-1">Try adjusting your search criteria or clear the search to return to category browsing.</p>
+                </div>
+            </div>
+
+            <!-- Bottom Pagination Navigation -->
+            <footer class="h-14 border-t border-slate-800 bg-slate-900/60 px-4 md:px-8 flex items-center justify-between shrink-0 text-xs text-slate-400">
+                <button id="prev-cat-btn" class="px-3 py-1.5 rounded border border-slate-800 bg-slate-900 hover:bg-slate-800 hover:text-slate-200 transition-colors flex items-center space-x-2">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span class="hidden sm:inline">Previous Category</span>
+                </button>
+                <div class="flex items-center space-x-1 font-mono">
+                    <span class="text-slate-500">Viewing Category</span>
+                    <span id="current-page-num" class="text-amber-400 font-bold px-1.5 py-0.5 bg-amber-950/40 rounded border border-amber-800/30">01</span>
+                    <span class="text-slate-500">/ 10</span>
+                </div>
+                <button id="next-cat-btn" class="px-3 py-1.5 rounded border border-slate-800 bg-slate-900 hover:bg-slate-800 hover:text-slate-200 transition-colors flex items-center space-x-2">
+                    <span class="hidden sm:inline">Next Category</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Article Detail Modal -->
+    <div id="article-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 bg-black/80 backdrop-blur-md">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <!-- Modal Header -->
+            <div class="p-5 md:p-6 border-b border-slate-800 flex justify-between items-start bg-slate-950/50">
+                <div>
+                    <div class="flex items-center space-x-3 mb-2">
+                        <span id="modal-category" class="text-xs uppercase tracking-wider font-semibold text-amber-500 bg-amber-950/60 border border-amber-800/40 px-2 py-0.5 rounded">Category</span>
+                        <span id="modal-date" class="text-xs font-mono text-slate-400">Date Range</span>
+                        <span id="modal-id" class="text-xs font-mono text-slate-500">#Page 001</span>
+                    </div>
+                    <h2 id="modal-title" class="text-xl md:text-3xl font-serif font-bold text-slate-100">Article Title</h2>
+                </div>
+                <button id="close-modal-btn" class="text-slate-400 hover:text-slate-100 p-2 rounded-lg hover:bg-slate-800 transition-colors">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="flex-1 overflow-y-auto p-6 md:p-8 space-y-6 text-slate-300 leading-relaxed text-sm md:text-base" id="modal-body">
+                <!-- Article Content dynamically injected -->
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 border-t border-slate-800 bg-slate-950/50 flex justify-between items-center text-xs">
+                <button id="modal-bookmark-btn" class="px-4 py-2 rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center space-x-2 transition-colors">
+                    <i class="fa-regular fa-bookmark text-amber-400"></i>
+                    <span id="modal-bookmark-text">Bookmark Entry</span>
+                </button>
+                <button id="modal-close-bottom" class="px-5 py-2 rounded-lg bg-amber-600 hover:bg-amber-500 text-slate-950 font-semibold transition-colors">
+                    Close Article
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Data and Application Logic -->
+    <script>
+        // Data Structure: 10 Categories, each with exactly 10 Pages (100 Articles total)
+        const categoriesData = [
+            {
+                id: 1,
+                title: "Early Life & Formative Years",
+                timeline: "1889 – 1918",
+                description: "Youth in Austria, Vienna architectural ambitions, homelessness, early ideological influences, and frontline service in World War I.",
+                articles: [
+                    { id: 1, title: "Birth and Childhood in Braunau am Inn (1889–1907)", date: "1889–1907", summary: "Hitler's early life in Austria, relationship with his father Alois and mother Klara, and early schooling in Linz.", body: "Adolf Hitler was born on 20 April 1889 in Braunau am Inn, Austria-Hungary. His father, Alois Hitler, was a customs official, while his mother, Klara Pölzl, was deeply devoted to him. The family moved frequently. Hitler struggled academically in secondary school (Realschule) in Linz, clashing with his strict father who envisioned a civil service career for him. Following his father's sudden death in 1903, Hitler pursued art.", tags: ["Childhood", "Austria", "Family Background"] },
+                    { id: 2, title: "The Vienna Years and Artistic Ambitions (1907–1913)", date: "1907–1913", summary: "Rejection from the Academy of Fine Arts Vienna, life in homeless shelters, and exposure to anti-Semitic politics.", body: "Moving to Vienna in 1907, Hitler twice failed the entrance examination for the Academy of Fine Arts Vienna. Following Klara's death from breast cancer, Hitler exhausted his inheritance and lived in poverty, residing in men's hostels (Männerheim). During this era, Vienna was a hub of racial nationalism, pan-Germanism, and anti-Semitism, influenced by Mayor Karl Lueger and Georg Ritter von Schönerer.", tags: ["Vienna", "Art", "Ideological Origins"] },
+                    { id: 3, title: "Relocation to Munich (1913–1914)", date: "1913–1914", summary: "Avoidance of Austro-Hungarian military draft and relocation to the Kingdom of Bavaria.", body: "In May 1913, Hitler received the final share of his father's estate and moved to Munich, Bavaria. He sought to avoid military service in the multi-ethnic Austro-Hungarian army, which he disdained. In early 1914, he was apprehended by Austrian authorities for medical evaluation but was deemed unfit for service due to physical weakness.", tags: ["Munich", "Bavaria", "Draft Avoidance"] },
+                    { id: 4, title: "Outbreak of World War I & Enlistment (1914)", date: "August 1914", summary: "Enthusiastic reaction to WWI mobilization and enlistment in the Bavarian Army.", body: "The outbreak of World War I in August 1914 provided Hitler with a defining purpose. Living in Munich, he petitioned King Ludwig III of Bavaria to join a Bavarian regiment. Permission was granted, and he was enlisted into the 16th Bavarian Reserve Infantry Regiment (List Regiment).", tags: ["WWI", "Enlistment", "Bavarian Army"] },
+                    { id: 5, title: "Frontline Duty as a Meldegänger (Dispatch Runner)", date: "1914–1916", summary: "Combat experiences on the Western Front, First Battle of Ypres, and early military decorations.", body: "Hitler served as a dispatch runner (Meldegänger) on the Western Front in France and Belgium. The role was hazardous, requiring runners to navigate artillery shellfire to deliver messages between headquarters and frontline trenches. He was present at the First Battle of Ypres, battle of the Somme, and Arras.", tags: ["Western Front", "Trench Warfare", "Ypres"] },
+                    { id: 6, title: "Iron Cross Awards and Military Recognition", date: "1914 & 1918", summary: "Awarding of the Iron Cross Second Class and First Class for bravery under fire.", body: "Hitler was decorated for bravery, receiving the Iron Cross Second Class in December 1914. In August 1918, he received the Iron Cross First Class—a rare decoration for a corporal (Gefreiter)—upon the recommendation of Hugo Gutmann, his Jewish regimental adjutant. Despite his awards, he was never promoted beyond Gefreiter due to leadership reservations.", tags: ["Iron Cross", "Military Medals", "Gefreiter"] },
+                    { id: 7, title: "Wounding at Somme and Gas Attack at Ypres (1916 & 1918)", date: "1916 & 1918", summary: "Physical injuries suffered during combat and temporary blindness from mustard gas.", body: "In October 1916, Hitler was wounded in the left thigh by a shell fragment during the Battle of the Somme, spending two months in hospital at Beelitz. On 13–14 October 1918, near Ypres, he was temporarily blinded by a British mustard gas attack and was sent to the military hospital in Pasewalk, Pomerania.", tags: ["Wounded in Action", "Mustard Gas", "Pasewalk"] },
+                    { id: 8, title: "The Armistice and the 'Stab-in-the-Back' Myth", date: "November 1918", summary: "Reaction to the November 1918 German capitulation and adoption of the Dolchstoßlegende.", body: "While recovering from blindness in Pasewalk, Hitler learned of Germany's defeat and the November Revolution. Deeply traumatized by the capitulation, he internalized the 'Stab-in-the-Back' myth (Dolchstoßlegende), attributing Germany's defeat not to military failure on the front but to betrayal by Marxists, politicians, and Jews on the home front.", tags: ["Armistice 1918", "Dolchstoßlegende", "Mythology"] },
+                    { id: 9, title: "Post-War Intelligence Agent for the Reichswehr", date: "1918–1919", summary: "Assignment by the Army to monitor political groups in Munich following the Munich Soviet Republic.", body: "After WWI, Hitler returned to Munich. Following the brief collapse of the Munich Soviet Republic in 1919, the army (Reichswehr) employed him as a 'V-Mann' (intelligence agent). His duty was to educate soldiers against communist propaganda and monitor extremist political parties operating in Munich.", tags: ["Reichswehr", "Intelligence", "Post-WWI Munich"] },
+                    { id: 10, title: "Discovery of the German Workers' Party (DAP)", date: "September 1919", summary: "Hitler's assignment to inspect Anton Drexler's DAP and his decision to join as member #55.", body: "On 12 September 1919, Hitler attended a meeting of the German Workers' Party (DAP), a small nationalist group led by Anton Drexler. Impressed by Drexler's anti-capitalist, nationalist ideas and invited to speak, Hitler joined the party as its 55th member (and 7th member of the executive committee).", tags: ["DAP", "Anton Drexler", "Party Origin"] }
+                ]
+            },
+            {
+                id: 2,
+                title: "Rise to Power",
+                timeline: "1919 – 1933",
+                description: "Transformation of the NSDAP, Beer Hall Putsch, Mein Kampf, Reichstag electoral expansion, and appointment as Chancellor.",
+                articles: [
+                    { id: 11, title: "Formalization of the 25-Point Program (1920)", date: "February 1920", summary: "Drafting of the NSDAP core platform demanding revocation of Versailles and denial of Jewish citizenship.", body: "On 24 February 1920, at the Hofbräuhaus in Munich, Hitler presented the 25-Point Program of the German Workers' Party. Co-authored with Anton Drexler, it called for the revocation of the Treaty of Versailles, creation of a Greater Germany, denial of citizenship to Jews, and social welfare reform.", tags: ["25-Point Program", "Hofbräuhaus", "Manifesto"] },
+                    { id: 12, title: "Renaming to NSDAP & Creation of the SA (1920–1921)", date: "1920–1921", summary: "Adoption of the Swastika emblem and paramilitary protection force under Ernst Röhm.", body: "The DAP was renamed the National Socialist German Workers' Party (NSDAP) to appeal to both nationalist and working-class voters. Hitler adopted the swastika as the party symbol. In 1921, the Sturmabteilung (SA or Brownshirts) was established under Ernst Röhm to protect party meetings and intimidate political opponents.", tags: ["NSDAP", "SA", "Swastika", "Ernst Röhm"] },
+                    { id: 13, title: "Assuming Party Leadership (Führerprinzip)", date: "July 1921", summary: "Hitler's ultimatum securing absolute dictatorship over the Nazi Party structure.", body: "In July 1921, following an internal party dispute where leaders sought to merge with rival groups, Hitler offered his resignation. Recognizing his oratorical indispensable value, the party executive yielded. Hitler became Chairman with dictatorial authority, establishing the 'Führerprinzip' (Leader Principle).", tags: ["Führerprinzip", "Party Control", "Oratory"] },
+                    { id: 14, title: "The Munich Beer Hall Putsch (1923)", date: "8–9 November 1923", summary: "Failed coup d'état in Munich alongside General Erich Ludendorff resulting in arrest.", body: "Inspired by Mussolini's March on Rome, Hitler attempted a coup against the Bavarian government at the Bürgerbräukeller in Munich. Joined by WWI hero Erich Ludendorff, the armed march was crushed by Bavarian police near the Feldherrnhalle. Sixteen Nazis and four police officers were killed.", tags: ["Beer Hall Putsch", "Ludendorff", "Coups"] },
+                    { id: 15, title: "Trial for High Treason and Prison Sentence (1924)", date: "February–December 1924", summary: "Public trial used as a propaganda platform and lenient sentencing at Landsberg Prison.", body: "Hitler was tried for high treason in early 1924. He used the televised courtroom as a national propaganda stage to preach nationalist doctrine. Convicted and sentenced to five years, he served only eight months in comfortable conditions at Landsberg Prison.", tags: ["Landsberg Prison", "Treason Trial", "Judicial Sympathy"] },
+                    { id: 16, title: "Authoring Mein Kampf (1924–1925)", date: "1924–1925", summary: "Dictation of autobiography and political treatise outlining Lebensraum and racial hierarchy.", body: "While imprisoned at Landsberg, Hitler dictated the first volume of 'Mein Kampf' ('My Struggle') to Rudolf Hess. The book combined autobiography with an outline of his racial worldview, anti-Semitism, anti-Marxism, and the imperative for 'Lebensraum' (living space) in Eastern Europe.", tags: ["Mein Kampf", "Lebensraum", "Ideology"] },
+                    { id: 17, title: "Reorganization and the Legal Path to Power (1925–1929)", date: "1925–1929", summary: "Shift from revolutionary putschism to constitutional electoral strategy across Germany.", body: "After his release in late 1924, Hitler refounded the banned NSDAP. Realizing violent revolution was impractical, he adopted the 'Legality Strategy' (Legalitätsprinzip)—seeking power through democratic elections to eventually abolish democracy from within.", tags: ["Legality Strategy", "Electoral Politics", "Weimar Democracy"] },
+                    { id: 18, title: "Impact of the Great Depression on Weimar Germany", date: "1929–1932", summary: "Wall Street crash, mass unemployment, and radicalization of the German electorate.", body: "The October 1929 Wall Street crash hit Weimar Germany severely due to reliance on US loans under the Dawes Plan. Unemployment reached 6 million by 1932. The economic misery fueled electoral support for both the Communist Party (KPD) and the NSDAP.", tags: ["Great Depression", "Economic Collapse", "Weimar Republic"] },
+                    { id: 19, title: "Electoral Breakthroughs (1930 & 1932 Reichstag Elections)", date: "1930–1932", summary: "Surge from fringe party (2.6%) to the largest party in the German Reichstag (37.3%).", body: "In the September 1930 election, the NSDAP jumped from 12 seats to 107 seats. By July 1932, with 37.3% of the vote, the Nazi Party became the largest party in the Reichstag, creating parliamentary deadlock.", tags: ["Elections", "Reichstag", "Parliamentary Deadlock"] },
+                    { id: 20, title: "Appointment as Reich Chancellor (30 January 1933)", date: "30 January 1933", summary: "Backroom deals involving Franz von Papen and President Paul von Hindenburg.", body: "Conservatives led by former Chancellor Franz von Papen convinced aging President Paul von Hindenburg to appoint Hitler Chancellor in a coalition cabinet. Papen famously claimed they could 'tame' Hitler within months. Hitler took the oath on 30 January 1933.", tags: ["Chancellor", "Hindenburg", "Papen", "Appointment"] }
+                ]
+            },
+            {
+                id: 3,
+                title: "Nazi Regime & Totalitarian Control",
+                timeline: "1933 – 1939",
+                description: "Dismantling of Weimar democracy, Gleichschaltung, Night of the Long Knives, creation of police state, and rearmament.",
+                articles: [
+                    { id: 21, title: "The Reichstag Fire and Emergency Decree", date: "February 1933", summary: "Arson at the Reichstag building used to suspend civil liberties via emergency powers.", body: "On 27 February 1933, the Reichstag building was set on fire. The regime blamed Dutch communist Marinus van der Lubbe. Hitler persuaded Hindenburg to sign the Reichstag Fire Decree on 28 February, suspending civil liberties including free speech, assembly, and habeas corpus.", tags: ["Reichstag Fire", "Civil Liberties", "Emergency Decree"] },
+                    { id: 22, title: "The Enabling Act of 1933 (Ermächtigungsgesetz)", date: "March 1933", summary: "Constitutional amendment granting cabinet full legislative power without Reichstag approval.", body: "Passed on 23 March 1933 through intimidation by SA guards and excluding Communist deputies, the Enabling Act allowed Hitler's cabinet to enact laws without Reichstag consent or presidential signature, establishing de facto dictatorship.", tags: ["Enabling Act", "Dictatorship", "Legislation"] },
+                    { id: 23, title: "Gleichschaltung (Nazification of Society)", date: "1933–1934", summary: "Systematic alignment of trade unions, civic associations, judicial systems, and media.", body: "Gleichschaltung involved eliminating independent institutions. Trade unions were replaced by the German Labour Front (DAF), non-Nazi political parties were banned or dissolved, and state governments were subordinated to Reich Governors (Reichsstatthalter).", tags: ["Gleichschaltung", "Nazification", "Totalitarianism"] },
+                    { id: 24, title: "Night of the Long Knives (Röhm Purge)", date: "30 June – 2 July 1934", summary: "Execution of Ernst Röhm, SA leaders, and political rivals to secure Reichswehr support.", body: "Fearing the radical SA under Ernst Röhm wanted a 'Second Revolution' and to absorb the army, Hitler carried out a bloody purge. The SS executed Röhm, former Chancellor Gregor Strasser, Kurt von Schleicher, and over 80 others. The army subsequently swore an oath to Hitler personally.", tags: ["Night of the Long Knives", "Röhm Purge", "SS vs SA"] },
+                    { id: 25, title: "Death of Hindenburg & Merging of President-Chancellor Offices", date: "2 August 1934", summary: "Hitler assumes sole supreme head of state title as 'Führer und Reichskanzler'.", body: "Upon President Hindenburg's death on 2 August 1934, Hitler abolished the presidency and merged its powers with the chancellorship. Armed forces personnel immediately took a personal oath of allegiance to Hitler as Führer.", tags: ["Führer", "Hindenburg Death", "Personal Oath"] },
+                    { id: 26, title: "Establishment of the Gestapo and Concentration Camp System", date: "1933–1936", summary: "Creation of the Secret State Police under Göring/Himmler and early camps like Dachau.", body: "Dachau concentration camp was established in March 1933 for political prisoners. The Secret State Police (Gestapo), founded by Hermann Göring and later managed by Heinrich Himmler and Reinhard Heydrich, operated above the law to crush dissent.", tags: ["Gestapo", "SS", "Dachau", "Himmler"] },
+                    { id: 27, title: "The Nuremberg Race Laws (1935)", date: "September 1935", summary: "Racial legislation defining Jewish status and stripping citizenship and marital rights.", body: "Announced at the Nuremberg Rally, the Reich Citizenship Law stripped German Jews of citizenship. The Law for the Protection of German Blood and German Honor prohibited marriage and extramarital relations between Jews and citizens of 'German blood'.", tags: ["Nuremberg Laws", "Anti-Semitism", "Racial Policy"] },
+                    { id: 28, title: "Economic Recovery and Rearmament (Four-Year Plan)", date: "1933–1938", summary: "Hjalmar Schacht's financial schemes, public works, autarky goals, and military expansion.", body: "Under Hjalmar Schacht and later Hermann Göring's Four-Year Plan (1936), Germany engaged in deficit spending (Mefo bills), Autobahn construction, and military expansion, drastically reducing unemployment and preparing for war.", tags: ["Autobahn", "Rearmament", "Four-Year Plan"] },
+                    { id: 29, title: "Kristallnacht (Night of Broken Glass)", date: "9–10 November 1938", summary: "State-sponsored pogrom destroying synagogues, Jewish businesses, and initiating mass arrests.", body: "Triggered by the assassination of diplomat Ernst vom Rath by Herschel Grynszpan, Joseph Goebbels orchestrated nationwide pogroms. Over 90 Jews were killed, hundreds of synagogues burned, 7,000 businesses looted, and 30,000 sent to concentration camps.", tags: ["Kristallnacht", "Pogrom", "Goebbels"] },
+                    { id: 30, title: "Creation of the Hitler Youth and Indoctrination", date: "1933–1939", summary: "Mandatory youth organization designed to foster military readiness and ideological devotion.", body: "Led by Baldur von Schirach, membership in the Hitler Youth (Hitlerjugend) and League of German Girls (BDM) became compulsory in 1936. School curricula were rewritten to emphasize racial biology, militarism, and obedience.", tags: ["Hitler Youth", "Education", "Indoctrination"] }
+                ]
+            },
+            {
+                id: 4,
+                title: "Pre-WWII Diplomacy & Expansion",
+                timeline: "1933 – 1939",
+                description: "Withdrawal from the League of Nations, Rhineland remilitarization, Anschluss, Munich Agreement, and Molotov-Ribbentrop Pact.",
+                articles: [
+                    { id: 31, title: "Withdrawal from League of Nations & Disarmament Conference", date: "October 1933", summary: "First major diplomatic rupture asserting German rearmament sovereignty.", body: "In October 1933, Hitler withdrew Germany from the World Disarmament Conference and the League of Nations, citing western refusal to grant equal armaments rights. This move was overwhelmingly endorsed in a public plebiscite.", tags: ["League of Nations", "Diplomacy", "Disarmament"] },
+                    { id: 32, title: "Anglo-German Naval Agreement (1935)", date: "June 1935", summary: "Bilateral treaty allowing Germany to rebuild navy up to 35% of the Royal Navy.", body: "Bypassing the Treaty of Versailles restrictions without consulting France, Britain signed an agreement permitting Germany to build a navy equal to 35% of total British naval tonnage and 100% of submarine tonnage.", tags: ["Naval Treaty", "Appeasement", "Royal Navy"] },
+                    { id: 33, title: "Remilitarization of the Rhineland (1936)", date: "7 March 1936", summary: "Military reoccupation of demilitarized zone testing Allied resolve.", body: "In violation of Versailles and the Locarno Treaties, Hitler ordered a small force of German troops into the demilitarized Rhineland. Despite strict orders to retreat if France mobilized, France and Britain took no action.", tags: ["Rhineland", "Versailles Violation", "Risk Tactic"] },
+                    { id: 34, title: "Formation of the Rome-Berlin Axis & Anti-Comintern Pact", date: "1936", summary: "Diplomatic alignment with Fascist Italy and Imperial Japan against Soviet Communism.", body: "Following Italian isolation during the Abyssinian Crisis, Hitler and Benito Mussolini formed the Rome-Berlin Axis in October 1936. Shortly after, Germany signed the Anti-Comintern Pact with Imperial Japan.", tags: ["Axis Powers", "Mussolini", "Anti-Comintern"] },
+                    { id: 35, title: "Hossbach Memorandum (1937)", date: "5 November 1937", summary: "Secret conference detailing Hitler's expansion plans for Lebensraum in Europe.", body: "Hitler held a secret meeting at the Reich Chancellery with top military leaders (recorded by Colonel Friedrich Hossbach). He outlined plans to secure 'living space' in Austria and Czechoslovakia by force if necessary before 1943–1945.", tags: ["Hossbach Memorandum", "War Plans", "Lebensraum"] },
+                    { id: 36, title: "The Anschluss of Austria (March 1938)", date: "12 March 1938", summary: "Annexation of Austria into Greater Germany following political pressure and entry of Wehrmacht.", body: "Hitler pressured Austrian Chancellor Kurt Schuschnigg to yield power to Austrian Nazis. On 12 March 1938, German troops marched into Austria without resistance, welcomed by large crowds, formally annexing Austria into the Reich.", tags: ["Anschluss", "Austria", "Greater Germany"] },
+                    { id: 37, title: "Sudetenland Crisis and Munich Conference (1938)", date: "September 1938", summary: "Appeasement policy leading to cession of Czechoslovak borderlands.", body: "Demanding the ethnic German Sudetenland region of Czechoslovakia, Hitler brought Europe to the brink of war. At the Munich Conference (29–30 Sept 1938), Neville Chamberlain, Edouard Daladier, and Mussolini agreed to cede the region to Germany.", tags: ["Munich Agreement", "Chamberlain", "Appeasement", "Sudetenland"] },
+                    { id: 38, title: "Complete Liquidation of Czechoslovakia (March 1939)", date: "15 March 1939", summary: "Occupation of Bohemia and Moravia, ending British belief in appeasement.", body: "Violating the Munich Agreement, German troops occupied the remainder of Czech territory, establishing the Protectorate of Bohemia and Moravia. Slovakia became a puppet state. This ended Western policy of appeasement.", tags: ["Protectorate", "Bohemia", "End of Appeasement"] },
+                    { id: 39, title: "Pact of Steel with Italy (May 1939)", date: "22 May 1939", summary: "Formal military alliance signed between Germany and Fascist Italy.", body: "Hitler and Mussolini formalized their military alliance through the Pact of Steel in Berlin. The treaty bound both powers to render immediate military assistance to each other in the event of war.", tags: ["Pact of Steel", "Italy", "Alliance"] },
+                    { id: 40, title: "Molotov-Ribbentrop Non-Aggression Pact (August 1939)", date: "23 August 1939", summary: "Non-aggression pact between Nazi Germany and Soviet Union with secret protocol dividing Eastern Europe.", body: "German Foreign Minister Joachim von Ribbentrop and Soviet Foreign Minister Vyacheslav Molotov signed a non-aggression pact in Moscow. A secret protocol divided Poland, the Baltic states, and Finland into German and Soviet spheres of influence.", tags: ["Molotov-Ribbentrop", "USSR", "Secret Protocol"] }
+                ]
+            },
+            {
+                id: 5,
+                title: "World War II Phase I: Conquests",
+                timeline: "1939 – 1941",
+                description: "Invasion of Poland, Blitzkrieg across Western Europe, Battle of Britain, Operation Barbarossa, and peak Axis territorial expansion.",
+                articles: [
+                    { id: 41, title: "Invasion of Poland and Beginning of WWII", date: "1 September 1939", summary: "Gleiwitz false-flag operation and Blitzkrieg invasion triggering British and French war declarations.", body: "Following a staged border provocation at Gleiwitz, German forces invaded Poland on 1 September 1939. Employing Blitzkrieg tactics, combined armor and air power, Germany overwhelmed Polish defenses. Britain and France declared war on 3 September.", tags: ["Poland Invasion", "Blitzkrieg", "WWII Start"] },
+                    { id: 42, title: "The Phoney War and Norwegian Campaign (1939–1940)", date: "April 1940", summary: "Period of inactivity on Western Front followed by naval invasion of Denmark and Norway.", body: "Following Poland's defeat, seven months of minimal land combat ensued ('Phoney War'). In April 1940, Germany launched Operation Weserübung, occupying Denmark and invading Norway to secure iron ore routes from Sweden.", tags: ["Phoney War", "Norway", "Weserübung"] },
+                    { id: 43, title: "Fall of France and Low Countries (May–June 1940)", date: "May–June 1940", summary: "Armor breakthrough through the Ardennes bypassing the Maginot Line.", body: "On 10 May 1940, German armored divisions under Guderian and Rommel bypassed the Maginot Line by attacking through the dense Ardennes forest. Allied armies were trapped, leading to the Dunkirk evacuation and French surrender on 22 June 1940.", tags: ["Fall of France", "Ardennes", "Dunkirk", "Maginot Line"] },
+                    { id: 44, title: "Battle of Britain and Operation Sea Lion", date: "July–October 1940", summary: "Luftwaffe aerial campaign against RAF Fighter Command and defeat of invasion plans.", body: "To prepare for Operation Sea Lion (invasion of Britain), Hermann Göring's Luftwaffe launched an air campaign to destroy the Royal Air Force. Fighter Command resisted successfully, forcing Hitler to indefinitely postpone the invasion.", tags: ["Battle of Britain", "Luftwaffe", "RAF", "Sea Lion"] },
+                    { id: 45, title: "The Blitz: Bombing of British Cities (1940–1941)", date: "Sept 1940 – May 1941", summary: "Strategic nighttime bombing of London and industrial centers failing to break British morale.", body: "Shifting tactics from RAF airfields, the Luftwaffe launched sustained nighttime civilian bombings of London, Coventry, and other ports. Over 40,000 civilians were killed, but British war production and resolve remained intact.", tags: ["The Blitz", "London Bombing", "Civilian Morale"] },
+                    { id: 46, title: "Balkan Campaign: Invasion of Yugoslavia and Greece (1941)", date: "April 1941", summary: "Operation 25 and Operation Marita securing Southern flank prior to USSR invasion.", body: "Following a coup in Yugoslavia and Italian setbacks in Greece, Hitler launched swift invasions of both nations in April 1941. While successful, the campaign delayed the launch of the invasion of the Soviet Union by several weeks.", tags: ["Balkans", "Yugoslavia", "Greece"] },
+                    { id: 47, title: "Operation Barbarossa: Invasion of the Soviet Union", date: "22 June 1941", summary: "Largest military invasion in history opening the Eastern Front across a 2,900 km front.", body: "Breaching the 1939 pact, 3.8 million Axis troops invaded the USSR along three army group axes. Intended as a war of annihilation, early encirclement battles at Minsk, Smolensk, and Kyiv captured millions of Red Army soldiers.", tags: ["Operation Barbarossa", "Eastern Front", "Red Army"] },
+                    { id: 48, title: "The Siege of Leningrad Begins", date: "September 1941", summary: "Encirclement of Leningrad resulting in an 872-day blockade and immense civilian starvation.", body: "Army Group North reached the outskirts of Leningrad in September 1941. Rather than storming the city, Hitler ordered it encircled to starve its population. The blockade lasted 872 days, causing over 1 million civilian deaths.", tags: ["Siege of Leningrad", "Blockade", "Eastern Front"] },
+                    { id: 49, title: "Operation Typhoon: The Battle of Moscow", date: "Oct 1941 – Jan 1942", summary: "Wehrmacht offensive on Moscow halted by harsh winter and Zhukov's counter-offensive.", body: "German forces launched a final push to capture Moscow. Sub-zero temperatures, supply line strain, and severe fatigue paralyzed the offensive miles from the Kremlin. General Zhukov launched a massive counter-offensive driving Wehrmacht forces back.", tags: ["Battle of Moscow", "Operation Typhoon", "Zhukov"] },
+                    { id: 50, title: "Declaration of War against the United States", date: "11 December 1941", summary: "Hitler's strategic miscalculation declaring war on the US following Pearl Harbor.", body: "Four days after Japan's attack on Pearl Harbor, Hitler declared war on the United States under the Tripartite Pact, despite no treaty obligation to do so. This brought US industrial capacity directly into the European conflict.", tags: ["US Declaration of War", "Pearl Harbor", "Strategic Error"] }
+                ]
+            },
+            {
+                id: 6,
+                title: "World War II Phase II: Reversal & Defeat",
+                timeline: "1942 – 1945",
+                description: "Stalingrad turning point, North African defeat, Battle of Kursk, Allied landings, and strategic air campaign.",
+                articles: [
+                    { id: 51, title: "Case Blue and the Caucasian Oil Offensive (1942)", date: "Summer 1942", summary: "Strategic shift toward Soviet southern oil fields in Baku and Maikop.", body: "Following the failure at Moscow, Hitler directed Army Group South to launch 'Case Blue' (Fall Blau). The objective was to capture the oil reserves of the Caucasus and secure the Volga river city of Stalingrad.", tags: ["Case Blue", "Caucasus Oil", "Eastern Front"] },
+                    { id: 52, title: "The Battle of Stalingrad: Turning Point of WWII", date: "Aug 1942 – Feb 1943", summary: "Brutal urban battle resulting in encirclement and destruction of von Paulus's 6th Army.", body: "General Friedrich Paulus's 6th Army engaged in fierce house-to-house fighting in Stalingrad. In November 1942, Soviet Operation Uranus launched a double-encirclement. Hitler forbade breakout. 91,000 German troops surrendered in February 1943.", tags: ["Stalingrad", "6th Army", "Operation Uranus", "Turning Point"] },
+                    { id: 53, title: "Defeat in North Africa and Second El Alamein", date: "1942–1943", summary: "Rommel's Afrika Korps turned back at El Alamein and final Axis surrender in Tunisia.", body: "Field Marshal Erwin Rommel's Afrika Korps was checked by Montgomery's 8th Army at Second El Alamein in November 1942. Anglo-American landings (Operation Torch) trapped Axis forces, leading to 275,000 surrenders in Tunisia in May 1943.", tags: ["Afrika Korps", "El Alamein", "Rommel", "North Africa"] },
+                    { id: 54, title: "Battle of Kursk: World's Largest Tank Warfare (1943)", date: "July 1943", summary: "Failed German offensive (Operation Citadel) giving Soviets permanent strategic initiative.", body: "Hitler delayed Operation Citadel to wait for new Panther and Tiger tanks. Soviet intelligence prepared deeply echeloned defenses. After massive armored clashes at Prokharovka, the offensive failed, marking the permanent loss of German strategic initiative.", tags: ["Kursk", "Tank Battle", "Prokhorovka", "Operation Citadel"] },
+                    { id: 55, title: "Allied Invasion of Sicily and Downfall of Mussolini", date: "July 1943", summary: "Operation Husky leading to Mussolini's arrest and Italian armistice with Allies.", body: "Allied forces invaded Sicily in July 1943. The Grand Council of Fascism deposed Mussolini, and Italy signed an armistice in September. German forces immediately occupied northern and central Italy to set up a defensive line.", tags: ["Sicily", "Mussolini Deposed", "Italian Campaign"] },
+                    { id: 56, title: "Allied Combined Bomber Offensive Over Reich Cities", date: "1943–1945", summary: "USAAF day and RAF night carpet bombing targeting war industries and major cities.", body: "The Allied strategic bombing campaign laid waste to German cities like Hamburg (Operation Gomorrah) and Dresden. Designed to ruin industrial output and civilian morale, it forced Germany to divert massive resources to home air defense.", tags: ["Bomber Offensive", "Dresden", "Air War", "Hamburg"] },
+                    { id: 57, title: "D-Day: Allied Landings in Normandy (Operation Overlord)", date: "6 June 1944", summary: "Opening of the Western Second Front with amphibious landings across Normandy beaches.", body: "Under General Eisenhower, Allied forces launched the largest amphibious operation in history on 6 June 1944. Establishing bridgeheads at Utah, Omaha, Gold, Juno, and Sword beaches, Allies liberated Paris by August 1944.", tags: ["D-Day", "Normandy", "Overlord", "Second Front"] },
+                    { id: 58, title: "Operation Bagration: Collapse of Army Group Centre", date: "June–August 1944", summary: "Massive Soviet summer offensive destroying 28 German divisions on Eastern Front.", body: "Timed to coincide with Normandy, the Soviet Army launched Operation Bagration in Belorussia. It shattered German Army Group Centre, inflicting over 400,000 casualties and advancing Red Army units to the borders of East Prussia.", tags: ["Operation Bagration", "Red Army", "Army Group Centre"] },
+                    { id: 59, title: "The Battle of the Bulge: Ardennes Counter-Offensive", date: "Dec 1944 – Jan 1945", summary: "Hitler's final desperate western offensive intended to split Allied armies.", body: "In December 1944, Hitler launched a surprise counter-offensive through the Ardennes to recapture Antwerp. Despite initial panic and encirclement at Bastogne, Allied air power and counter-attacks crushed the German salient.", tags: ["Battle of the Bulge", "Ardennes", "Bastogne"] },
+                    { id: 60, title: "Sinking of the Kriegsmarine & V-Weapon Program Failures", date: "1944–1945", summary: "Loss of surface fleet, U-boat defeat, and deployment of V-1/V-2 rocket miracle weapons.", body: "Germany's naval force was contained while the U-boat war was lost due to Enigma decryption and radar. Desperate investments in 'Vergeltungswaffen' (V-1 cruise missiles and V-2 rockets) terrorized London but failed to change war outcomes.", tags: ["Kriegsmarine", "V-2 Rocket", "Enigma", "U-Boats"] }
+                ]
+            },
+            {
+                id: 7,
+                title: "Holocaust, Atrocities & War Crimes",
+                timeline: "1939 – 1945",
+                description: "State-sponsored industrial genocide of 6 million Jews and millions of Romani, Slavs, disabled, and political prisoners.",
+                articles: [
+                    { id: 61, title: "Action T4: Euthanasia Program for Disabled Individuals", date: "1939–1941", summary: "Secret program testing gas chambers to murder disabled children and adults.", body: "Initiated by a secret decree backdated to 1 September 1939, Action T4 targeted psychiatric patients and individuals with physical disabilities. Over 70,000 people were murdered in carbon monoxide gas chambers before public protests halted formal operations.", tags: ["Action T4", "Euthanasia", "Gas Chambers"] },
+                    { id: 62, title: "Ghettoization Policy in Occupied Eastern Europe", date: "1939–1941", summary: "Forced confinement of Jewish populations in overcrowded urban enclosures like Warsaw.", body: "Following the Polish conquest, Jewish populations were forced into sealed urban quarters (Warsaw Ghetto, Łódź Ghetto). Extreme overcrowding, deliberate starvation rations, and disease killed hundreds of thousands prior to deportation camps.", tags: ["Ghettoization", "Warsaw Ghetto", "Starvation"] },
+                    { id: 63, title: "Einsatzgruppen Mass Shooting Operations", date: "1941–1943", summary: "Mobile killing squads executing over 1.5 million Jews behind the Eastern Front line.", body: "Following the invasion of the USSR, four SS Einsatzgruppen units (A, B, C, D) followed Wehrmacht troops. Assisted by local collaborators, they conducted mass execution by shooting into ravines, such as the Babi Yar massacre in Kyiv (33,771 killed in two days).", tags: ["Einsatzgruppen", "Babi Yar", "Mass Shootings"] },
+                    { id: 64, title: "The Wannsee Conference (January 1942)", date: "20 January 1942", summary: "Coordination of state bureaucracy for the 'Final Solution to the Jewish Question'.", body: "Chaired by Reinhard Heydrich at a villa in Wannsee, Berlin, 15 senior Nazi state officials met to coordinate the administrative, logistical, and transport execution of the 'Final Solution' (Endlösung)—the systematic genocide of European Jewry.", tags: ["Wannsee Conference", "Heydrich", "Final Solution"] },
+                    { id: 65, title: "Extermination Camps: Operation Reinhard", date: "1942–1943", summary: "Construction of dedicated death factories at Belzec, Sobibor, and Treblinka.", body: "Named in honor of assassinated Heydrich, Operation Reinhard oversaw death camps built specifically for rapid industrial mass murder using exhaust gas. Over 1.7 million Jews were murdered in these three camps within 18 months.", tags: ["Operation Reinhard", "Treblinka", "Sobibor", "Belzec"] },
+                    { id: 66, title: "Auschwitz-Birkenau: The Center of Industrial Genocide", date: "1940–1945", summary: "Combined concentration and extermination complex utilizing Zyklon B gas.", body: "Under Commandant Rudolf Höss, Auschwitz II-Birkenau became the largest extermination facility. Over 1.1 million people—90% of them Jewish—were murdered in industrial gas chambers using Zyklon B (hydrogen cyanide).", tags: ["Auschwitz", "Zyklon B", "Rudolf Höss"] },
+                    { id: 67, title: "The Murder of Romani, Soviet POWs, and Political Victims", date: "1939–1945", summary: "Systematic destruction of non-Jewish target groups in Nazi racial ideology.", body: "Beyond European Jews, Nazi racial policies resulted in the murder of 220,000–500,000 Romani people (Porajmos), over 3 million Soviet prisoners of war through deliberate starvation, Jehovah's Witnesses, homosexuals, and political dissidents.", tags: ["Porajmos", "Soviet POWs", "Victims of Nazism"] },
+                    { id: 68, title: "Warsaw Ghetto Uprising (1943)", date: "April–May 1943", summary: "Armed Jewish resistance against SS deportation forces in the Warsaw Ghetto.", body: "Led by Mordechai Anielewicz and the Jewish Combat Organization (ŻOB), ghetto inhabitants fought back against SS deportation forces with smuggled weapons. The SS under Jürgen Stroop burnt the ghetto block by block over 27 days.", tags: ["Warsaw Uprising", "Jewish Resistance", "ŻOB"] },
+                    { id: 69, title: "Death Marches in the War's Final Months", date: "Late 1944 – May 1945", summary: "Forced evacuation of concentration camp prisoners ahead of advancing Allied armies.", body: "As Soviet and Western armies approached, the SS forcibly evacuated concentration camps. Hundreds of thousands of emaciated prisoners were marched hundreds of miles in freezing winter weather without food. Tens of thousands died along the roads.", tags: ["Death Marches", "Camp Evacuations", "1945"] },
+                    { id: 70, title: "Allied Liberation of Camps & Documenting Atrocities", date: "1944–1945", summary: "Discovery of camps by Soviet, US, and British troops and early war crime documentation.", body: "Majdanek was liberated by Soviets in July 1944, followed by Auschwitz in January 1945. US and British forces liberated Ohrdruf, Buchenwald, and Bergen-Belsen in April 1945. Generals Eisenhower and Patton ordered civilian viewings and filming for proof.", tags: ["Camp Liberation", "Eisenhower", "Bergen-Belsen", "Evidence"] }
+                ]
+            },
+            {
+                id: 8,
+                title: "Domestic Policy & Propaganda",
+                timeline: "1933 – 1945",
+                description: "Goebbels ministry, totalitarian media control, economic total war mobilization, opposition suppression, and plots.",
+                articles: [
+                    { id: 71, title: "Reich Ministry of Public Enlightenment and Propaganda", date: "Founded March 1933", summary: "Joseph Goebbels' centralized control over press, radio, film, literature, and art.", body: "Led by Joseph Goebbels, the Propaganda Ministry (RMVP) held absolute authority over communication media. Radio broadcasts ('Volksempfänger' cheap radios), cinema (newsreels), and print were strictly censored to align with Nazi state objectives.", tags: ["Goebbels", "Propaganda", "Volksempfänger", "Censorship"] },
+                    { id: 72, title: "Cult of Personality: The Führer Myth", date: "1933–1945", summary: "Manufacturing Hitler's public image as infallible savior of the German nation.", body: "Propaganda carefully constructed the 'Führer Myth'—portraying Hitler as a modest, self-sacrificing genius above party corruption. This myth decoupled Hitler's personal popularity from unpopular local Nazi officials and policies.", tags: ["Führer Myth", "Cult of Personality", "Public Opinion"] },
+                    { id: 73, title: "The Nuremberg Rallies and Leni Riefenstahl Film Propaganda", date: "1933–1938", summary: "Mass rallies engineered to demonstrate unity, power, and discipline.", body: "Annual Nazi Party rallies at Nuremberg involved massive theatrical staging designed by Albert Speer (Cathedral of Light). Filmmaker Leni Riefenstahl captured these events in propaganda documentaries like 'Triumph of the Will' (1935).", tags: ["Nuremberg Rallies", "Speer", "Riefenstahl", "Triumph of the Will"] },
+                    { id: 74, title: "Labor Front (DAF) and 'Strength Through Joy' (KdF)", date: "1933–1939", summary: "State welfare schemes providing subsidized leisure, cruises, and the Volkswagen concept.", body: "After abolishing independent trade unions, the German Labour Front created 'Kraft durch Freude' (KdF). It offered workers subsidized theater tickets, sports events, cruises, and the 'KdF-Wagen' savings scheme for an affordable automobile.", tags: ["KdF", "DAF", "Volkswagen", "Labor Control"] },
+                    { id: 75, title: "Persecution of Religious Institutions & Church Struggle (Kirchenkampf)", date: "1933–1945", summary: "Attempts to subjugate Protestant and Catholic churches under state ideology.", body: "Hitler sought to suppress Christian influence via the 'Reichskonkordat' (1933) with the Vatican and the creation of the pro-Nazi 'German Christians'. Resisting clergy formed the Confessing Church (Bekennende Kirche), leading to arrests of pastors like Martin Niemöller.", tags: ["Kirchenkampf", "Catholic Church", "Protestant", "Niemöller"] },
+                    { id: 76, title: "Cultural Purges: 'Degenerate Art' and Book Burnings", date: "1933–1937", summary: "Suppression of modern art, literature, jazz music, and intellectual freedom.", body: "In May 1933, Nazi students burned thousands of 'un-German' books across university cities. In 1937, the regime staged the 'Degenerate Art' (Entartete Kunst) exhibition in Munich to mock modern, Jewish, and avant-garde artworks.", tags: ["Book Burning", "Degenerate Art", "Censorship"] },
+                    { id: 77, title: "Total War Mobilization: Albert Speer's Armaments Ministry", date: "1942–1945", summary: "Reorganization of German wartime economy under Albert Speer.", body: "Following Fritz Todt's death in 1942, Albert Speer took over the Ministry of Armaments. Speer streamlined war production, vastly increasing output despite Allied bombing through slave labor and industrial standardization.", tags: ["Albert Speer", "Total War", "War Production"] },
+                    { id: 78, title: "Goebbels' 'Total War' Speech at Sportpalast (1943)", date: "18 February 1943", summary: "Public mobilization speech demanding absolute civilian sacrifice following Stalingrad.", body: "Following the Stalingrad disaster, Goebbels delivered his famous speech at the Berlin Sportpalast, asking the crowd: 'Do you want total war?'. The speech marked the total mobilization of society, closing non-essential businesses.", tags: ["Sportpalast Speech", "Total War", "Goebbels"] },
+                    { id: 79, title: "Internal Resistance: The White Rose and Edelweiss Pirates", date: "1942–1943", summary: "Youth and university student opposition groups distributing anti-Nazi leaflets.", body: "The White Rose (Weiße Rose), founded by Hans and Sophie Scholl at Munich University, distributed leaflets denouncing the regime and Holocaust. They were arrested and executed in 1943. Working-class groups like the Edelweiss Pirates resisted Gestapo control in cities.", tags: ["White Rose", "Sophie Scholl", "Resistance"] },
+                    { id: 80, title: "The July 20 Assassination Plot (Operation Valkyrie)", date: "20 July 1944", summary: "Attempt by Claus von Stauffenberg to assassinate Hitler with a briefcase bomb at Wolf's Lair.", body: "Colonel Claus von Stauffenberg placed a bomb under a conference table at Hitler's Wolf's Lair headquarters in East Prussia. Hitler survived with minor injuries due to a heavy oak table leg. The coup failed, resulting in thousands of executions.", tags: ["Operation Valkyrie", "Stauffenberg", "Assassination Plot"] }
+                ]
+            },
+            {
+                id: 9,
+                title: "Downfall & The Fall of Berlin",
+                timeline: "January – May 1945",
+                description: "Vistula-Oder offensive, retreat to the Führerbunker, Battle of Berlin, suicide of Hitler, and unconditional surrender.",
+                articles: [
+                    { id: 81, title: "Soviet Vistula-Oder Offensive (January 1945)", date: "January 1945", summary: "Red Army drive from Poland directly to the Oder River, 60 km from Berlin.", body: "In January 1945, Soviet Generals Zhukov and Konev launched a massive offensive crossing Poland. The Red Army advanced 500 km in three weeks, reaching the Oder River and setting the stage for the final assault on Berlin.", tags: ["Vistula-Oder", "Red Army Advance", "1945"] },
+                    { id: 82, title: "Nero Decree: Hitler's Scorched Earth Orders (March 1945)", date: "19 March 1945", summary: "Order to destroy all German industrial infrastructure ahead of advancing Allies.", body: "Facing total military collapse, Hitler issued the 'Demolitions on Reich Territory' decree (Nero Decree). Believing the German people had failed him and lost the right to survive, he ordered the destruction of all utilities. Armaments Minister Albert Speer secretly sabotaged the order.", tags: ["Nero Decree", "Scorched Earth", "Speer Sabotage"] },
+                    { id: 83, title: "Retreat to the Führerbunker (January–April 1945)", date: "Jan–April 1945", summary: "Hitler's confinement in subterranean bunker complex beneath the Reich Chancellery.", body: "Hitler relocated permanently to the Führerbunker located 8.5 meters beneath the Reich Chancellery garden. Detached from military reality, he commanded non-existent armies and suffered severe physical decay from Parkinson's and stress.", tags: ["Führerbunker", "Reich Chancellery", "Bunker"] },
+                    { id: 84, title: "Battle of the Seelow Heights (April 1945)", date: "16–19 April 1945", summary: "The last major defensive line east of Berlin breached by Soviet forces.", body: "Marshal Zhukov's 1st Belorussian Front attacked German defenses commanded by Gotthard Heinrici at the Seelow Heights. Despite heavy Soviet armor losses, the numeric superiority broke through, opening the highway to Berlin.", tags: ["Seelow Heights", "Zhukov", "Defense of Berlin"] },
+                    { id: 85, title: "Encirclement of Berlin by the Red Army", date: "25 April 1945", summary: "Complete Soviet encirclement of Berlin and link-up with US forces at Torgau.", body: "By 25 April 1945, Soviet armies completely ringed Berlin. On the same day, US and Soviet troops met at the Elbe River near Torgau, cutting remaining German forces in half across central Europe.", tags: ["Encirclement", "Elbe Day", "Torgau"] },
+                    { id: 86, title: "The Volkssturm and Final Defense of Berlin", date: "April 1945", summary: "Mobilization of elderly men and Hitler Youth equipped with Panzerfausts.", body: "Berlin was defended by depleted Wehrmacht divisions, SS units, elderly men of the Volkssturm (people's militia), and young boys of the Hitler Youth. Armed with Panzerfaust anti-tank weapons, they fought street by street against heavy Soviet artillery.", tags: ["Volkssturm", "Hitler Youth Defense", "Street Fighting"] },
+                    { id: 87, title: "Göring and Himmler's 'Treason' and Expulsion", date: "23–28 April 1945", summary: "Attempts by Hermann Göring and Heinrich Himmler to assume leadership or negotiate surrender.", body: "On 23 April, Göring sent a telegram asking to assume leadership under a 1941 decree; Hitler declared him a traitor. On 28 April, news broke that Himmler tried to negotiate peace with Western Allies through Folke Bernadotte. Hitler stripped both of all offices.", tags: ["Göring Telegram", "Himmler Betrayal", "Bunker Drama"] },
+                    { id: 88, title: "Marriage to Eva Braun and Political Testament (29 April 1945)", date: "29 April 1945", summary: "Late-night wedding inside the bunker and dictation of final political will.", body: "In the early hours of 29 April 1945, Hitler married his long-time companion Eva Braun in a brief ceremony. He then dictated his Political Testament to secretary Traudl Junge, appointing Grand Admiral Karl Dönitz as Head of State and Joseph Goebbels as Chancellor.", tags: ["Eva Braun", "Political Will", "Traudl Junge", "Dönitz"] },
+                    { id: 89, title: "Suicide of Adolf Hitler and Eva Braun (30 April 1945)", date: "30 April 1945", summary: "Hitler's suicide by gunshot/cyanide and disposal of bodies in Reich Chancellery garden.", body: "Around 3:30 PM on 30 April 1945, with Soviet troops less than 500 meters from the bunker, Hitler shot himself while Eva Braun bit into a cyanide capsule. Their bodies were carried to the Chancellery garden, doused in petrol, and burned.", tags: ["Hitler Death", "Suicide", "30 April 1945"] },
+                    { id: 90, title: "Unconditional Surrender of Germany (May 1945)", date: "7–8 May 1945", summary: "Signing of instrument of surrender at Reims and Berlin-Karlshorst (VE Day).", body: "After Goebbels committed suicide on 1 May, Admiral Dönitz formed the Flensburg Government. General Alfred Jodl signed the unconditional surrender at Reims on 7 May, re-signed by Field Marshal Wilhelm Keitel in Berlin on 8 May 1945 (VE Day).", tags: ["VE Day", "Unconditional Surrender", "Keitel", "Reims"] }
+                ]
+            },
+            {
+                id: 10,
+                title: "Historiography, Post-War Impact & Legacy",
+                timeline: "1945 – Present",
+                description: "Nuremberg Trials, Denazification, division of Germany, Cold War politics, historical interpretations, and memory culture.",
+                articles: [
+                    { id: 91, title: "The International Military Tribunal at Nuremberg (1945–1946)", date: "1945–1946", summary: "Prosecution of top surviving Nazi leadership for war crimes and crimes against humanity.", body: "The Allied powers established the IMT at Nuremberg to try 24 major war criminals (Göring, Ribbentrop, Speer, Keitel, etc.). The trial established precedent in international law for 'Crimes Against Humanity' and 'Crimes Against Peace'.", tags: ["Nuremberg Trials", "IMT", "War Crimes", "International Law"] },
+                    { id: 92, title: "Denazification and Allied Occupation Zones", date: "1945–1949", summary: "Allied efforts to purge Nazi ideology, symbols, and personnel from German public life.", body: "Germany was divided into four occupation zones (US, British, French, Soviet). The Allies instituted 'Denazification' questionnaires (Fragebogen) to categorize citizens, remove former party members from civil posts, and ban swastika iconography.", tags: ["Denazification", "Occupation Zones", "Fragebogen"] },
+                    { id: 93, title: "Division of Germany and Cold War Frontier", date: "1949", summary: "Creation of West Germany (FRG) and East Germany (GDR) out of occupied zones.", body: "Rising tension between Western powers and the Soviet Union led to the creation of the Federal Republic of Germany (FRG) in May 1949 and the German Democratic Republic (GDR) in October 1949, turning Germany into the focal point of the Cold War.", tags: ["FRG", "GDR", "Cold War", "Division of Germany"] },
+                    { id: 94, title: "Historiographical Debate: Intentionalism vs. Functionalism", date: "1960s–1980s", summary: "Academic debate regarding whether WWII/Holocaust resulted from a master plan or structural escalation.", body: "Historians debated the mechanics of the Nazi state. 'Intentionalists' (e.g., Lucy Dawidowicz, Eberhard Jäckel) argued Hitler followed a pre-meditated master plan. 'Functionalists' (e.g., Martin Broszat, Hans Mommsen) argued policies emerged through bureaucratic rivalry and chaotic escalation.", tags: ["Historiography", "Intentionalism", "Functionalism"] },
+                    { id: 95, title: "The Historikerstreit (Historians' Quarrel) of 1986", date: "1986", summary: "Debate over the singularity of Nazi crimes and comparison with Soviet atrocities.", body: "A heated debate erupted among West German intellectuals after Ernst Nolte suggested Nazi atrocities were a reaction to Soviet Bolshevik terror. Jürgen Habermas and others argued that the Holocaust was a unique, singular catastrophe that defined modern German identity.", tags: ["Historikerstreit", "Habermas", "Nolte", "Memory"] },
+                    { id: 96, title: "Myth of the Clean Wehrmacht Debunked", date: "1990s", summary: "Re-examination of regular German army complicity in Eastern Front war crimes.", body: "The myth that the regular German army (Wehrmacht) fought honorably while only the SS committed atrocities was thoroughly dismantled by historians and the landmark 'Wehrmacht Exhibition' (Wehrmachtsausstellung) in Germany during the late 1990s.", tags: ["Clean Wehrmacht Myth", "War Crimes", "Historiography"] },
+                    { id: 97, title: "German Holocaust Remembrance and Vergangenheitsbewältigung", date: "1950s–Present", summary: "The process of coming to terms with the past in modern post-war German society.", body: "Germany pioneered 'Vergangenheitsbewältigung' (working through the past). This involved mandatory school education on Nazi crimes, Holocaust memorials across Berlin (Memorial to the Murdered Jews of Europe), and 'Stolpersteine' (stumbling stones) brass plaques.", tags: ["Vergangenheitsbewältigung", "Remembrance", "Stolpersteine"] },
+                    { id: 98, title: "Universal Legal Precedents and Genocide Convention", date: "1948", summary: "Drafting of the UN Genocide Convention inspired by Raphael Lemkin and WWII atrocities.", body: "Polish-Jewish lawyer Raphael Lemkin coined the word 'genocide' in 1944. WWII atrocities directly inspired the 1948 UN Convention on the Prevention and Punishment of the Crime of Genocide and the Universal Declaration of Human Rights.", tags: ["Raphael Lemkin", "Genocide Convention", "UN", "Human Rights"] },
+                    { id: 99, title: "Psychological and Leadership Studies on Adolf Hitler", date: "Post-War", summary: "Psychohistorical analyses of totalitarian charisma and destructive leadership.", body: "Scholars like Ian Kershaw, Alan Bullock, and Walter C. Langer analyzed Hitler's charismatic authority, political acumen, psychological narcissism, and reliance on systemic radicalization within totalitarian structures.", tags: ["Ian Kershaw", "Psychohistory", "Charismatic Authority"] },
+                    { id: 100, title: "Global Impact on Post-WWII International Order", date: "1945–Present", summary: "Establishment of the United Nations, NATO, nuclear deterrence, and anti-fascist legal frameworks.", body: "The destruction wrought by Hitler and WWII remade global geopolitics. It ended European colonial hegemony, birthed the United Nations, created the State of Israel, inaugurated the Nuclear Age, and shaped modern international humanitarian law.", tags: ["Post-War Order", "United Nations", "Global Impact", "Legacy"] }
+                ]
+            }
+        ];
+
+        // State Management
+        let currentCategoryIndex = 0; // 0 to 9
+        let currentViewMode = 'grid'; // 'grid' or 'list'
+        let bookmarkedArticleIds = new Set(JSON.parse(localStorage.getItem('ww2_archive_bookmarks') || '[]'));
+        let activeSearchQuery = '';
+        let isFilterBookmarksOnly = false;
+
+        // DOM Elements
+        const categoryMenu = document.getElementById('category-menu');
+        const articlesGrid = document.getElementById('articles-grid');
+        const catTitle = document.getElementById('cat-title');
+        const catDesc = document.getElementById('cat-desc');
+        const catIndexBadge = document.getElementById('cat-index-badge');
+        const catTimelineBadge = document.getElementById('cat-timeline-badge');
+        const currentPageNum = document.getElementById('current-page-num');
+        const globalSearch = document.getElementById('global-search');
+        const clearSearchBtn = document.getElementById('clear-search');
+        const searchInfoBar = document.getElementById('search-info-bar');
+        const searchCount = document.getElementById('search-count');
+        const resetSearchBtn = document.getElementById('reset-search-btn');
+        const noResults = document.getElementById('no-results');
+        const prevCatBtn = document.getElementById('prev-cat-btn');
+        const nextCatBtn = document.getElementById('next-cat-btn');
+        const viewGridBtn = document.getElementById('view-grid-btn');
+        const viewListBtn = document.getElementById('view-list-btn');
+        const toggleMobileSidebar = document.getElementById('toggle-mobile-sidebar');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+        const bookmarkFilterBtn = document.getElementById('bookmark-filter-btn');
+        const bookmarkBadge = document.getElementById('bookmark-badge');
+
+        // Modal Elements
+        const articleModal = document.getElementById('article-modal');
+        const modalCategory = document.getElementById('modal-category');
+        const modalDate = document.getElementById('modal-date');
+        const modalId = document.getElementById('modal-id');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBody = document.getElementById('modal-body');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const modalCloseBottom = document.getElementById('modal-close-bottom');
+        const modalBookmarkBtn = document.getElementById('modal-bookmark-btn');
+        const modalBookmarkText = document.getElementById('modal-bookmark-text');
+        let currentModalArticleId = null;
+
+        // Initialize Application
+        function initApp() {
+            renderSidebarMenu();
+            renderCategoryContent();
+            updateBookmarkBadge();
+            setupEventListeners();
+        }
+
+        // Render 10 Category Items in Sidebar
+        function renderSidebarMenu() {
+            categoryMenu.innerHTML = '';
+            categoriesData.forEach((cat, index) => {
+                const isActive = (index === currentCategoryIndex && !activeSearchQuery && !isFilterBookmarksOnly);
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left p-3 rounded-lg text-xs md:text-sm transition-all duration-150 flex items-start space-x-3 ${
+                    isActive 
+                    ? 'bg-amber-500/10 border border-amber-500/30 text-amber-300 font-medium' 
+                    : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
+                }`;
+                btn.onclick = () => {
+                    activeSearchQuery = '';
+                    isFilterBookmarksOnly = false;
+                    globalSearch.value = '';
+                    clearSearchBtn.classList.add('hidden');
+                    bookmarkFilterBtn.classList.remove('border-amber-500', 'text-amber-400');
+                    selectCategory(index);
+                    closeMobileSidebar();
+                };
+
+                btn.innerHTML = `
+                    <span class="font-mono text-xs px-1.5 py-0.5 rounded ${isActive ? 'bg-amber-500/20 text-amber-400 font-bold' : 'bg-slate-800 text-slate-500'} shrink-0">${String(index + 1).padStart(2, '0')}</span>
+                    <div class="flex-1 overflow-hidden">
+                        <div class="truncate font-semibold">${cat.title}</div>
+                        <div class="text-[10px] text-slate-500 font-mono mt-0.5">${cat.timeline}</div>
+                    </div>
+                `;
+                categoryMenu.appendChild(btn);
+            });
+        }
+
+        // Render Main Content (Category or Search/Bookmark Mode)
+        function renderCategoryContent() {
+            const currentCat = categoriesData[currentCategoryIndex];
+            
+            // Update Header Info
+            catTitle.textContent = currentCat.title;
+            catDesc.textContent = currentCat.description;
+            catIndexBadge.textContent = `Category ${currentCat.id} of 10`;
+            catTimelineBadge.textContent = currentCat.timeline;
+            currentPageNum.textContent = String(currentCat.id).padStart(2, '0');
+
+            // Determine Articles to Display
+            let articlesToDisplay = [];
+
+            if (isFilterBookmarksOnly) {
+                // Collect bookmarked articles across all categories
+                categoriesData.forEach(cat => {
+                    cat.articles.forEach(art => {
+                        if (bookmarkedArticleIds.has(art.id)) {
+                            articlesToDisplay.push({ ...art, categoryName: cat.title });
+                        }
+                    });
+                });
+                catTitle.textContent = "Bookmarked Historical Records";
+                catDesc.textContent = "Viewing all saved articles for quick reference.";
+                catIndexBadge.textContent = "Bookmarks View";
+                catTimelineBadge.textContent = `${articlesToDisplay.length} Saved`;
+                searchInfoBar.classList.remove('hidden');
+                searchCount.textContent = articlesToDisplay.length;
+            } else if (activeSearchQuery.trim() !== '') {
+                // Filter articles across all 100 pages
+                const q = activeSearchQuery.toLowerCase();
+                categoriesData.forEach(cat => {
+                    cat.articles.forEach(art => {
+                        const matchTitle = art.title.toLowerCase().includes(q);
+                        const matchSummary = art.summary.toLowerCase().includes(q);
+                        const matchBody = art.body.toLowerCase().includes(q);
+                        const matchTags = art.tags.some(t => t.toLowerCase().includes(q));
+                        if (matchTitle || matchSummary || matchBody || matchTags) {
+                            articlesToDisplay.push({ ...art, categoryName: cat.title });
+                        }
+                    });
+                });
+                catTitle.textContent = `Search Results: "${activeSearchQuery}"`;
+                catDesc.textContent = `Displaying filtered results across all 100 articles in the archive.`;
+                catIndexBadge.textContent = "Search Mode";
+                catTimelineBadge.textContent = `${articlesToDisplay.length} Matches`;
+                searchInfoBar.classList.remove('hidden');
+                searchCount.textContent = articlesToDisplay.length;
+            } else {
+                // Normal Category Mode (10 articles)
+                articlesToDisplay = currentCat.articles.map(art => ({ ...art, categoryName: currentCat.title }));
+                searchInfoBar.classList.add('hidden');
+            }
+
+            // Render Cards
+            articlesGrid.innerHTML = '';
+            if (articlesToDisplay.length === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+                
+                // Set Grid Layout Classes
+                if (currentViewMode === 'grid') {
+                    articlesGrid.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6";
+                } else {
+                    articlesGrid.className = "flex flex-col space-y-4";
+                }
+
+                articlesToDisplay.forEach(art => {
+                    const isBookmarked = bookmarkedArticleIds.has(art.id);
+                    const card = document.createElement('div');
+                    
+                    if (currentViewMode === 'grid') {
+                        card.className = "bg-slate-900/90 border border-slate-800 hover:border-amber-500/50 rounded-xl p-5 flex flex-col justify-between transition-all duration-200 hover:shadow-xl hover:shadow-amber-500/5 group cursor-pointer relative";
+                        card.onclick = (e) => {
+                            if (!e.target.closest('.bookmark-btn-click')) {
+                                openArticleModal(art);
+                            }
+                        };
+                        card.innerHTML = `
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-[10px] font-mono uppercase bg-slate-800 text-slate-400 px-2 py-0.5 rounded border border-slate-700/50">#Page ${String(art.id).padStart(3, '0')}</span>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-xs font-mono text-amber-500/90"><i class="fa-regular fa-calendar-days mr-1"></i>${art.date}</span>
+                                        <button class="bookmark-btn-click p-1 text-slate-500 hover:text-amber-400 transition-colors" data-id="${art.id}">
+                                            <i class="${isBookmarked ? 'fa-solid text-amber-400' : 'fa-regular'} fa-bookmark"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <h3 class="text-base font-serif font-bold text-slate-100 group-hover:text-amber-400 transition-colors leading-snug mb-2">${art.title}</h3>
+                                <p class="text-xs text-slate-400 line-clamp-3 leading-relaxed mb-4">${art.summary}</p>
+                            </div>
+                            <div>
+                                <div class="flex flex-wrap gap-1 mb-3">
+                                    ${art.tags.map(t => `<span class="text-[9px] bg-slate-950 text-slate-500 px-2 py-0.5 rounded border border-slate-800 font-mono">#${t}</span>`).join('')}
+                                </div>
+                                <div class="text-xs font-medium text-amber-500/90 group-hover:translate-x-1 transition-transform flex items-center">
+                                    Read Analysis <i class="fa-solid fa-chevron-right text-[10px] ml-1"></i>
+                                </div>
+                            </div>
+                        `;
+                    } else { // List View
+                        card.className = "bg-slate-900/90 border border-slate-800 hover:border-amber-500/50 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all duration-200 cursor-pointer group";
+                        card.onclick = (e) => {
+                            if (!e.target.closest('.bookmark-btn-click')) {
+                                openArticleModal(art);
+                            }
+                        };
+                        card.innerHTML = `
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-3 mb-1">
+                                    <span class="text-[10px] font-mono bg-slate-800 text-slate-400 px-2 py-0.5 rounded">#Page ${String(art.id).padStart(3, '0')}</span>
+                                    <span class="text-xs font-mono text-amber-500">${art.date}</span>
+                                    <span class="text-xs text-slate-500 hidden md:inline">• ${art.categoryName}</span>
+                                </div>
+                                <h3 class="text-base font-serif font-bold text-slate-100 group-hover:text-amber-400 transition-colors">${art.title}</h3>
+                                <p class="text-xs text-slate-400 line-clamp-1 mt-1">${art.summary}</p>
+                            </div>
+                            <div class="flex items-center space-x-3 shrink-0">
+                                <button class="bookmark-btn-click p-2 text-slate-500 hover:text-amber-400 transition-colors" data-id="${art.id}">
+                                    <i class="${isBookmarked ? 'fa-solid text-amber-400' : 'fa-regular'} fa-bookmark"></i>
+                                </button>
+                                <span class="text-xs font-medium text-slate-300 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 group-hover:bg-amber-600 group-hover:text-slate-950 transition-colors">Read</span>
+                            </div>
+                        `;
+                    }
+
+                    // Add Bookmark Toggle Listener
+                    const bmBtn = card.querySelector('.bookmark-btn-click');
+                    bmBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        toggleBookmark(art.id);
+                    };
+
+                    articlesGrid.appendChild(card);
+                });
+            }
+
+            renderSidebarMenu();
+        }
+
+        // Change Category
+        function selectCategory(index) {
+            currentCategoryIndex = index;
+            renderCategoryContent();
+            document.getElementById('articles-scroll-container').scrollTop = 0;
+        }
+
+        // Toggle Bookmark
+        function toggleBookmark(articleId) {
+            if (bookmarkedArticleIds.has(articleId)) {
+                bookmarkedArticleIds.delete(articleId);
+            } else {
+                bookmarkedArticleIds.add(articleId);
+            }
+            localStorage.setItem('ww2_archive_bookmarks', JSON.stringify(Array.from(bookmarkedArticleIds)));
+            updateBookmarkBadge();
+            renderCategoryContent();
+
+            // Update Modal status if open
+            if (currentModalArticleId === articleId) {
+                updateModalBookmarkState(articleId);
+            }
+        }
+
+        function updateBookmarkBadge() {
+            bookmarkBadge.textContent = bookmarkedArticleIds.size;
+        }
+
+        // Open Modal with Article Content
+        function openArticleModal(article) {
+            currentModalArticleId = article.id;
+            modalCategory.textContent = article.categoryName || `Category ${categoriesData[currentCategoryIndex].id}`;
+            modalDate.textContent = article.date;
+            modalId.textContent = `#Page ${String(article.id).padStart(3, '0')}`;
+            modalTitle.textContent = article.title;
+
+            modalBody.innerHTML = `
+                <div class="p-4 rounded-xl bg-amber-950/20 border border-amber-800/30 text-amber-200/90 text-sm italic mb-6">
+                    <i class="fa-solid fa-quote-left mr-2 text-amber-500"></i>${article.summary}
+                </div>
+                <div class="space-y-4 text-slate-200 leading-relaxed font-sans text-base">
+                    <p>${article.body}</p>
+                    <p class="text-sm text-slate-400">This historical document entry forms part of the standardized 100-page World War II analytical registry. It details key political, military, or social developments within the 1889–1945 timeline.</p>
+                </div>
+                <div class="mt-8 pt-4 border-t border-slate-800">
+                    <h4 class="text-xs uppercase font-mono tracking-wider text-slate-500 mb-2">Historical Keywords & Categorization</h4>
+                    <div class="flex flex-wrap gap-2">
+                        ${article.tags.map(t => `<span class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-md border border-slate-700">#${t}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+
+            updateModalBookmarkState(article.id);
+            articleModal.classList.remove('hidden');
+        }
+
+        function updateModalBookmarkState(articleId) {
+            const isBookmarked = bookmarkedArticleIds.has(articleId);
+            if (isBookmarked) {
+                modalBookmarkBtn.className = "px-4 py-2 rounded-lg border border-amber-600/50 bg-amber-950/50 text-amber-300 flex items-center space-x-2 transition-colors";
+                modalBookmarkBtn.querySelector('i').className = "fa-solid fa-bookmark text-amber-400";
+                modalBookmarkText.textContent = "Bookmarked";
+            } else {
+                modalBookmarkBtn.className = "px-4 py-2 rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center space-x-2 transition-colors";
+                modalBookmarkBtn.querySelector('i').className = "fa-regular fa-bookmark text-amber-400";
+                modalBookmarkText.textContent = "Bookmark Entry";
+            }
+        }
+
+        function closeModal() {
+            articleModal.classList.add('hidden');
+            currentModalArticleId = null;
+        }
+
+        // Mobile Sidebar Controls
+        function openMobileSidebar() {
+            sidebar.classList.remove('-translate-x-full');
+            sidebarOverlay.classList.remove('hidden');
+        }
+
+        function closeMobileSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            sidebarOverlay.classList.add('hidden');
+        }
+
+        // Setup All Event Listeners
+        function setupEventListeners() {
+            // Global Search Input
+            globalSearch.addEventListener('input', (e) => {
+                activeSearchQuery = e.target.value;
+                isFilterBookmarksOnly = false;
+                if (activeSearchQuery.trim() !== '') {
+                    clearSearchBtn.classList.remove('hidden');
+                } else {
+                    clearSearchBtn.classList.add('hidden');
+                }
+                renderCategoryContent();
+            });
+
+            clearSearchBtn.addEventListener('click', () => {
+                globalSearch.value = '';
+                activeSearchQuery = '';
+                clearSearchBtn.classList.add('hidden');
+                renderCategoryContent();
+            });
+
+            resetSearchBtn.addEventListener('click', () => {
+                globalSearch.value = '';
+                activeSearchQuery = '';
+                isFilterBookmarksOnly = false;
+                clearSearchBtn.classList.add('hidden');
+                bookmarkFilterBtn.classList.remove('border-amber-500', 'text-amber-400');
+                renderCategoryContent();
+            });
+
+            // Bookmarks Filter Button
+            bookmarkFilterBtn.addEventListener('click', () => {
+                isFilterBookmarksOnly = !isFilterBookmarksOnly;
+                activeSearchQuery = '';
+                globalSearch.value = '';
+                clearSearchBtn.classList.add('hidden');
+
+                if (isFilterBookmarksOnly) {
+                    bookmarkFilterBtn.classList.add('border-amber-500', 'text-amber-400');
+                } else {
+                    bookmarkFilterBtn.classList.remove('border-amber-500', 'text-amber-400');
+                }
+                renderCategoryContent();
+            });
+
+            // Category Pagination Controls
+            prevCatBtn.addEventListener('click', () => {
+                if (currentCategoryIndex > 0) {
+                    activeSearchQuery = '';
+                    isFilterBookmarksOnly = false;
+                    globalSearch.value = '';
+                    selectCategory(currentCategoryIndex - 1);
+                }
+            });
+
+            nextCatBtn.addEventListener('click', () => {
+                if (currentCategoryIndex < categoriesData.length - 1) {
+                    activeSearchQuery = '';
+                    isFilterBookmarksOnly = false;
+                    globalSearch.value = '';
+                    selectCategory(currentCategoryIndex + 1);
+                }
+            });
+
+            // Layout Switching Controls
+            viewGridBtn.addEventListener('click', () => {
+                currentViewMode = 'grid';
+                viewGridBtn.className = "px-3 py-1 rounded bg-slate-800 text-slate-200 font-medium";
+                viewListBtn.className = "px-3 py-1 rounded text-slate-400 hover:text-slate-200";
+                renderCategoryContent();
+            });
+
+            viewListBtn.addEventListener('click', () => {
+                currentViewMode = 'list';
+                viewListBtn.className = "px-3 py-1 rounded bg-slate-800 text-slate-200 font-medium";
+                viewGridBtn.className = "px-3 py-1 rounded text-slate-400 hover:text-slate-200";
+                renderCategoryContent();
+            });
+
+            // Mobile Sidebar Toggles
+            toggleMobileSidebar.addEventListener('click', openMobileSidebar);
+            sidebarOverlay.addEventListener('click', closeMobileSidebar);
+
+            // Modal Event Handlers
+            closeModalBtn.addEventListener('click', closeModal);
+            modalCloseBottom.addEventListener('click', closeModal);
+            articleModal.addEventListener('click', (e) => {
+                if (e.target === articleModal) closeModal();
+            });
+
+            modalBookmarkBtn.addEventListener('click', () => {
+                if (currentModalArticleId) {
+                    toggleBookmark(currentModalArticleId);
+                }
+            });
+
+            // Keyboard Shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !articleModal.classList.contains('hidden')) {
+                    closeModal();
+                }
+            });
+        }
+
+        // Run App on Load
+        window.onload = initApp;
+    </script>
+</body>
+</html>
